@@ -12,18 +12,17 @@ import {
     shareFile,
     getImageShareFallbackText,
 } from '../../lib/utils/share';
-import type { Recognition, User } from '../../lib/types';
+import type { Recognition } from '../../lib/types';
 import './ShareSuccessModal.css';
 
 interface ShareSuccessModalProps {
-    recognition: Recognition;
-    toUser: User;
+    recognitions: Recognition | Recognition[];
     onClose: () => void;
 }
 
 type ModalState = 'initial' | 'generating' | 'card-ready';
 
-export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccessModalProps) {
+export function ShareSuccessModal({ recognitions, onClose }: ShareSuccessModalProps) {
     const { showToast } = useToast();
     const cardRef = useRef<HTMLDivElement>(null);
 
@@ -31,14 +30,18 @@ export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccess
     const [cardBlob, setCardBlob] = useState<Blob | null>(null);
     const [cardPreviewUrl, setCardPreviewUrl] = useState<string | null>(null);
 
-    // Enrich recognition with user data for sharing
-    const enrichedRecognition: Recognition = {
-        ...recognition,
-        to_user: toUser,
-    };
+    // Normalize to array
+    const recognitionList = Array.isArray(recognitions) ? recognitions : [recognitions];
+    const primaryRecognition = recognitionList[0];
+
+    // Generate display text for "To users"
+    const toNamesDisplay = recognitionList
+        .map(r => r.to_user?.name)
+        .filter(Boolean)
+        .join('さん、');
 
     const handleLineTextShare = async () => {
-        const text = generateShareText(enrichedRecognition);
+        const text = generateShareText(recognitionList);
 
         // Copy to clipboard first
         const copied = await copyToClipboard(text);
@@ -89,7 +92,7 @@ export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccess
 
     const handleSaveCard = () => {
         if (!cardBlob) return;
-        const filename = generateCardFilename(enrichedRecognition);
+        const filename = generateCardFilename(primaryRecognition);
         downloadBlob(cardBlob, filename);
         showToast('カードを保存しました');
     };
@@ -99,8 +102,8 @@ export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccess
 
         // Try Web Share API first
         if (canShareFiles()) {
-            const filename = generateCardFilename(enrichedRecognition);
-            const shared = await shareFile(cardBlob, filename, generateShareText(enrichedRecognition));
+            const filename = generateCardFilename(primaryRecognition);
+            const shared = await shareFile(cardBlob, filename, generateShareText(recognitionList));
             if (shared) {
                 return;
             }
@@ -134,7 +137,7 @@ export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccess
                     {state === 'initial' && (
                         <>
                             <p className="share-success-desc">
-                                {toUser.name}さんへの称賛がアプリに記録されました。
+                                <strong>{toNamesDisplay}さん</strong>への称賛が記録されました。<br />
                                 LINEでも共有しますか？
                             </p>
 
@@ -204,7 +207,7 @@ export function ShareSuccessModal({ recognition, toUser, onClose }: ShareSuccess
 
                 {/* Hidden card for generation */}
                 <div className="share-card-hidden" aria-hidden="true">
-                    <PraiseShareCard ref={cardRef} recognition={enrichedRecognition} />
+                    <PraiseShareCard ref={cardRef} recognition={primaryRecognition} />
                 </div>
             </div>
         </div>

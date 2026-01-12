@@ -30,7 +30,8 @@
 }
 
 .composer-label {
-    display: block;
+    display: flex;
+    align-items: center;
     font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--color-text-muted);
@@ -42,6 +43,7 @@
     align-items: center;
     gap: var(--space-2);
     margin-bottom: var(--space-3);
+    flex-wrap: wrap;
 }
 
 .composer-recent-label {
@@ -57,6 +59,14 @@
 
 .composer-recent-avatar:hover {
     transform: scale(1.1);
+}
+
+/* New: Selected state for recent avatars */
+.composer-recent-avatar.selected {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+    filter: grayscale(1);
 }
 
 .composer-selected-user {
@@ -83,60 +93,6 @@
 
 .composer-clear-user:hover {
     color: var(--color-text);
-}
-
-.composer-user-select {
-    position: relative;
-}
-
-.composer-user-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    max-height: 280px;
-    overflow-y: auto;
-    z-index: 20;
-}
-
-.composer-user-option {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    text-align: left;
-    transition: background var(--transition-fast);
-}
-
-.composer-user-option:hover {
-    background: var(--color-border-light);
-}
-
-.composer-user-option-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.composer-user-option-name {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-}
-
-.composer-user-option-dept {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-}
-
-.composer-no-results {
-    padding: var(--space-4);
-    text-align: center;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
 }
 
 .composer-templates {
@@ -194,4 +150,84 @@
 .composer-user-select-native {
     width: 100%;
     cursor: pointer;
+}
+
+/* Multi-recipient new styles */
+.composer-selected-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    padding: var(--space-2);
+    background: var(--color-background-soft);
+    border-radius: var(--radius-md);
+    min-height: 48px;
+    align-items: center;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.2s ease;
+}
+
+.user-chip-name {
+    font-weight: 500;
+}
+
+.user-chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-background-muted);
+    color: var(--color-text-muted);
+    font-size: 10px;
+    transition: all var(--transition-fast);
+}
+
+.user-chip-remove:hover {
+    background: var(--color-error-light);
+    color: var(--color-error);
+}
+
+.composer-label-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-left: auto;
+    font-weight: normal;
+}
+
+.composer-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+}
+
+.composer-label-sub {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: normal;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

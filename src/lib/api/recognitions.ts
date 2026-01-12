@@ -150,6 +150,65 @@ export async function createRecognition(
     return data;
 }
 
+/**
+ * Create multiple recognitions (batch insert for multiple recipients)
+ */
+export async function createRecognitions(
+    fromUserId: string,
+    toUserIds: string[],
+    message: string,
+    effectKey: EffectKey = 'confetti'
+): Promise<{ success: number; failed: number; recognitions: Recognition[] }> {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!fromUserId || !uuidRegex.test(fromUserId)) {
+        console.error('Invalid fromUserId:', fromUserId);
+        return { success: 0, failed: toUserIds.length, recognitions: [] };
+    }
+
+    // Filter valid UUIDs
+    const validToUserIds = toUserIds.filter(id => uuidRegex.test(id));
+    if (validToUserIds.length === 0) {
+        console.error('No valid toUserIds');
+        return { success: 0, failed: toUserIds.length, recognitions: [] };
+    }
+
+    // Build payloads
+    const payloads = validToUserIds.map(toUserId => ({
+        from_user_id: fromUserId,
+        to_user_id: toUserId,
+        message,
+        effect_key: effectKey,
+    }));
+
+    console.log('Creating recognitions with payloads:', payloads);
+
+    const { data, error } = await supabase
+        .from('recognitions')
+        .insert(payloads)
+        .select();
+
+    if (error) {
+        console.error('Error creating recognitions:', error);
+        console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+        });
+        return { success: 0, failed: toUserIds.length, recognitions: [] };
+    }
+
+    const recognitions = data || [];
+    console.log('Recognitions created successfully:', recognitions);
+
+    return {
+        success: recognitions.length,
+        failed: toUserIds.length - recognitions.length,
+        recognitions,
+    };
+}
+
 export async function fetchRecognitionsForUser(
     userId: string,
     type: 'received' | 'sent',

@@ -107,8 +107,7 @@ export function PraiseCard({ recognition, currentUserId, onClapToggle }: PraiseC
             {/* Share Modal */}
             {showShareModal && recognition.to_user && (
                 <ShareSuccessModal
-                    recognition={recognition}
-                    toUser={recognition.to_user}
+                    recognitions={[recognition]}
                     onClose={() => setShowShareModal(false)}
                 />
             )}

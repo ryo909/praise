@@ -5,12 +5,21 @@ const APP_URL = 'https://ryo909.github.io/praise/';
 /**
  * Generate share text for a recognition
  */
-export function generateShareText(recognition: Recognition): string {
-    const toName = recognition.to_user?.name || '相手';
+// Update generateShareText to handle array of recipients
+export function generateShareText(recognitionOrList: Recognition | Recognition[]): string {
+    const isArray = Array.isArray(recognitionOrList);
+    const recognition = isArray ? recognitionOrList[0] : recognitionOrList;
+    const allRecognitions = isArray ? recognitionOrList : [recognitionOrList];
+
+    // Create "to" names string (e.g. "Aさん、Bさんへ")
+    const toNames = allRecognitions
+        .map(r => r.to_user?.name || '相手')
+        .join('、');
+
     const fromName = recognition.from_user?.name || '送信者';
     const message = recognition.message || 'あなたの日頃の頑張りに感謝！';
 
-    return `${toName}さんへ👏
+    return `${toNames}さんへ👏
 ${message}
 
 — ${fromName}より
