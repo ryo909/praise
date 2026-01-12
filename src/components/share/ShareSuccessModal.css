@@ -1,0 +1,145 @@
+.share-success-modal {
+    max-width: 480px;
+    width: 100%;
+}
+
+.share-success-title {
+    font-size: var(--font-size-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.share-close-btn {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+}
+
+.share-success-desc {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-6);
+}
+
+.share-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.share-btn-icon {
+    font-size: 20px;
+}
+
+.share-btn-line {
+    background: #06c755;
+    color: white;
+    border: none;
+}
+
+.share-btn-line:hover {
+    background: #05b34c;
+    transform: translateY(-1px);
+}
+
+.share-btn-card {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+.share-btn-card:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.share-btn-save {
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.share-btn-save:hover {
+    background: var(--color-border-light);
+}
+
+.share-skip {
+    width: 100%;
+    color: var(--color-text-light);
+}
+
+/* Generating state */
+.share-generating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-8) 0;
+}
+
+.share-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border-light);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Card preview */
+.share-card-desc {
+    text-align: center;
+    margin-bottom: var(--space-4);
+    font-weight: 500;
+}
+
+.share-card-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-border-light);
+    border-radius: var(--radius-lg);
+}
+
+.share-card-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.share-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+/* Hidden card for rendering */
+.share-card-hidden {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    pointer-events: none;
+}

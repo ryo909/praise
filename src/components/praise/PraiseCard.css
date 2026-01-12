@@ -118,3 +118,11 @@
     color: white;
     transform: scale(1.05);
 }
+
+.praise-card-share {
+    color: #06c755;
+}
+
+.praise-card-share:hover {
+    background: rgba(6, 199, 85, 0.1);
+}

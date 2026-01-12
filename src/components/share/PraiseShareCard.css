@@ -1,0 +1,64 @@
+.praise-share-card {
+    width: 400px;
+    min-height: 280px;
+    border-radius: 24px;
+    padding: 32px;
+    color: white;
+    font-family: 'Inter', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.praise-share-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.praise-share-card-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.praise-share-card-to {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.praise-share-card-message {
+    font-size: 18px;
+    line-height: 1.7;
+    flex: 1;
+    text-align: center;
+    margin-bottom: 24px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.praise-share-card-from {
+    font-size: 14px;
+    text-align: right;
+    opacity: 0.9;
+    margin-bottom: 24px;
+}
+
+.praise-share-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.8;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.praise-share-card-date {
+    font-weight: 500;
+}
+
+.praise-share-card-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
