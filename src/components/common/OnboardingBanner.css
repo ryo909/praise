@@ -1,0 +1,45 @@
+.onboarding-banner {
+    background: linear-gradient(135deg, var(--color-primary), #a855f7);
+    color: white;
+    padding: var(--space-3) var(--space-6);
+}
+
+.onboarding-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.onboarding-icon {
+    font-size: 20px;
+}
+
+.onboarding-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+}
+
+.onboarding-action {
+    background: white;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-4);
+}
+
+.onboarding-action:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.onboarding-dismiss {
+    color: white;
+    opacity: 0.8;
+    padding: var(--space-2);
+    font-size: 16px;
+    transition: opacity var(--transition-fast);
+}
+
+.onboarding-dismiss:hover {
+    opacity: 1;
+}

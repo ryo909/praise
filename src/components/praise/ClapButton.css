@@ -1,0 +1,45 @@
+.clap-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+    background: var(--color-border-light);
+    color: var(--color-text-muted);
+}
+
+.clap-button:hover:not(:disabled) {
+    background: var(--color-border);
+    transform: scale(1.05);
+}
+
+.clap-button.clapped {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.clap-button.clapped:hover:not(:disabled) {
+    background: #ddd6fe;
+}
+
+.clap-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.clap-icon {
+    font-size: 16px;
+    transition: transform var(--transition-fast);
+}
+
+.clap-button:hover:not(:disabled) .clap-icon {
+    transform: scale(1.2);
+}
+
+.clap-count {
+    font-weight: 600;
+    min-width: 16px;
+    text-align: center;
+}

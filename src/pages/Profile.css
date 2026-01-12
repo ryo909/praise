@@ -1,0 +1,177 @@
+.profile-page {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.profile-header-skeleton {
+    height: 120px;
+    border-radius: var(--radius-lg);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    margin-bottom: var(--space-5);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+}
+
+.profile-dept {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+}
+
+.profile-edit {
+    margin-top: var(--space-2);
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.profile-stat {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-5);
+    text-align: center;
+}
+
+.profile-stat-value {
+    display: block;
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.profile-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.profile-badges {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.profile-section-title {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+}
+
+.profile-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.profile-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-primary-light);
+    border-radius: var(--radius-full);
+}
+
+.profile-badge-emoji {
+    font-size: 18px;
+}
+
+.profile-badge-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-primary);
+}
+
+.profile-recognitions {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.profile-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.profile-tab {
+    flex: 1;
+    padding: var(--space-4);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+    border-bottom: 2px solid transparent;
+}
+
+.profile-tab:hover {
+    color: var(--color-text);
+}
+
+.profile-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+.profile-recognition-list {
+    padding: var(--space-4);
+}
+
+.profile-no-recognitions {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--space-6);
+}
+
+.profile-recognition-item {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.profile-recognition-item:last-child {
+    border-bottom: none;
+}
+
+.profile-recognition-user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    color: var(--color-text);
+}
+
+.profile-recognition-name {
+    font-weight: 500;
+}
+
+.profile-recognition-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+}
+
+.profile-recognition-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+}

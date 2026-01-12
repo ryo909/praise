@@ -1,0 +1,40 @@
+.send-page {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.send-composer-wrapper {
+    margin-bottom: var(--space-8);
+}
+
+.send-tips {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-card);
+}
+
+.send-tips-title {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+}
+
+.send-tips-list {
+    list-style: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.send-tips-list li {
+    padding: var(--space-2) 0;
+    padding-left: var(--space-5);
+    position: relative;
+}
+
+.send-tips-list li::before {
+    content: '•';
+    position: absolute;
+    left: var(--space-2);
+    color: var(--color-primary);
+}

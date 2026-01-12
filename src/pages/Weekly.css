@@ -1,0 +1,134 @@
+.weekly-page {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.weekly-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.weekly-card-skeleton {
+    height: 320px;
+    border-radius: var(--radius-lg);
+}
+
+.weekly-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.weekly-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.weekly-card-header {
+    padding: var(--space-5);
+    background: linear-gradient(135deg, var(--color-primary), #a855f7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.weekly-card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.weekly-card-total {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+.weekly-card-body {
+    padding: var(--space-5);
+}
+
+.weekly-section {
+    margin-bottom: var(--space-5);
+}
+
+.weekly-section:last-child {
+    margin-bottom: 0;
+}
+
+.weekly-section-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+}
+
+.weekly-ranking {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.weekly-ranking-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    transition: background var(--transition-fast);
+}
+
+.weekly-ranking-item:hover {
+    background: var(--color-border-light);
+}
+
+.weekly-ranking-medal {
+    font-size: 20px;
+}
+
+.weekly-ranking-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.weekly-ranking-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.weekly-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.weekly-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-border-light);
+    border-radius: var(--radius-md);
+}
+
+.weekly-badge-emoji {
+    font-size: 24px;
+}
+
+.weekly-badge-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.weekly-badge-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.weekly-badge-user {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+}

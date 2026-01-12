@@ -1,0 +1,108 @@
+.right-rail {
+    width: var(--right-rail-width);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: sticky;
+    top: var(--topbar-height);
+    height: calc(100vh - var(--topbar-height));
+    overflow-y: auto;
+}
+
+.widget-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.widget-header {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.widget-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.widget-icon {
+    font-size: 16px;
+}
+
+.widget-content {
+    padding: var(--space-4);
+}
+
+.widget-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.widget-list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.widget-list-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.widget-list-item-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.widget-list-item-meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.widget-stat {
+    text-align: center;
+    padding: var(--space-2);
+}
+
+.widget-stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.widget-stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.widget-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+}
+
+.widget-empty {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+@media (max-width: 1200px) {
+    .right-rail {
+        display: none;
+    }
+}

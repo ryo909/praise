@@ -1,0 +1,62 @@
+.settings-page {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.settings-section {
+    margin-bottom: var(--space-6);
+}
+
+.settings-section-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-3);
+}
+
+.settings-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-item-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.settings-item-value {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-weight: 500;
+}
+
+.settings-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-user-name {
+    font-size: var(--font-size-base);
+}
+
+.settings-user-dept {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}

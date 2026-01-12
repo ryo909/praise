@@ -1,0 +1,57 @@
+import { NavLink } from 'react-router-dom';
+import { useCurrentUser } from '../../providers/CurrentUserProvider';
+import './SidebarNav.css';
+
+export function SidebarNav() {
+    const { currentUser } = useCurrentUser();
+
+    const navItems = [
+        { path: '/', label: 'Home', icon: '🏠' },
+        { path: '/feed', label: 'Feed', icon: '📰' },
+        { path: '/send', label: 'Send', icon: '✨' },
+        { path: '/weekly', label: 'Weekly', icon: '📊' },
+        { path: '/settings', label: 'Settings', icon: '⚙️' },
+        { path: '/admin', label: 'Admin', icon: '🔧' },
+    ];
+
+    return (
+        <nav className="sidebar-nav">
+            <div className="sidebar-header">
+                <span className="sidebar-logo">🎉</span>
+                <span className="sidebar-title">Peer Praise</span>
+            </div>
+
+            <ul className="sidebar-menu">
+                {navItems.map(item => (
+                    <li key={item.path}>
+                        <NavLink
+                            to={item.path}
+                            className={({ isActive }) =>
+                                `sidebar-link ${isActive ? 'active' : ''}`
+                            }
+                        >
+                            <span className="sidebar-link-icon">{item.icon}</span>
+                            <span className="sidebar-link-label">{item.label}</span>
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
+
+            {currentUser && (
+                <div className="sidebar-footer">
+                    <NavLink to={`/profile/${currentUser.id}`} className="sidebar-user">
+                        <div className="avatar avatar-sm">
+                            {currentUser.name.charAt(0)}
+                        </div>
+                        <div className="sidebar-user-info">
+                            <span className="sidebar-user-name">{currentUser.name}</span>
+                            {currentUser.dept && (
+                                <span className="sidebar-user-dept">{currentUser.dept}</span>
+                            )}
+                        </div>
+                    </NavLink>
+                </div>
+            )}
+        </nav>
+    );
+}
