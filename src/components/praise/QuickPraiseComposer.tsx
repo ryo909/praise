@@ -17,13 +17,11 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
     const { currentUser, users, isLoading, openIdentityModal } = useCurrentUser();
     const { showToast } = useToast();
 
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUserId, setSelectedUserId] = useState<string>('');
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const [additionalMessage, setAdditionalMessage] = useState('');
     const [selectedEffect, setSelectedEffect] = useState<EffectKey>('confetti');
     const [recentRecipients, setRecentRecipients] = useState<User[]>([]);
-    const [showUserSelect, setShowUserSelect] = useState(false);
-    const [userSearchQuery, setUserSearchQuery] = useState('');
     const [isSending, setIsSending] = useState(false);
     const [showHint, setShowHint] = useState(false);
 
@@ -35,7 +33,6 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
     useEffect(() => {
         if (currentUser?.id) {
             fetchRecentRecipients(currentUser.id).then(recipients => {
-                // Filter out any invalid entries (in case of DB reset)
                 const validRecipients = recipients.filter(r => r && r.id && r.name);
                 setRecentRecipients(validRecipients);
             });
@@ -45,10 +42,8 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
     // Filter users - exclude current user
     const availableUsers = users.filter(u => u.id !== currentUser?.id);
 
-    const filteredUsers = availableUsers.filter(u => {
-        if (!userSearchQuery.trim()) return true;
-        return u.name.toLowerCase().includes(userSearchQuery.toLowerCase());
-    });
+    // Get selected user object from ID
+    const selectedUser = availableUsers.find(u => u.id === selectedUserId) || null;
 
     const getMessage = useCallback(() => {
         const parts: string[] = [];
@@ -57,8 +52,13 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         return parts.join(' ');
     }, [selectedTemplate, additionalMessage]);
 
-    const canSend = selectedUser !== null && selectedUser.id;
+    const canSend = selectedUserId !== '';
     const hasContent = selectedTemplate || additionalMessage.trim();
+
+    const handleUserChange = (userId: string) => {
+        console.log('handleUserChange:', userId);
+        setSelectedUserId(userId);
+    };
 
     const handleSend = async () => {
         // Validate current user
@@ -69,16 +69,16 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         }
 
         // Validate recipient
-        if (!selectedUser?.id) {
+        if (!selectedUserId) {
             showToast('宛先を選んでください', 'error');
             return;
         }
 
-        // Validate that selectedUser.id is a valid UUID
+        // Validate UUID format
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(selectedUser.id)) {
-            console.error('Invalid selectedUser.id:', selectedUser);
-            showToast('宛先が不正です。ページを再読み込みしてください', 'error');
+        if (!uuidRegex.test(selectedUserId)) {
+            console.error('Invalid selectedUserId:', selectedUserId);
+            showToast('宛先が不正です', 'error');
             return;
         }
 
@@ -90,11 +90,10 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
 
         setIsSending(true);
 
-        // Debug log
         console.log('Sending recognition:', {
             from: currentUser.id,
-            to: selectedUser.id,
-            toName: selectedUser.name,
+            to: selectedUserId,
+            toName: selectedUser?.name,
             message: getMessage(),
             effect: selectedEffect,
         });
@@ -102,31 +101,29 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         try {
             const recognition = await createRecognition(
                 currentUser.id,
-                selectedUser.id,
+                selectedUserId,
                 getMessage(),
                 selectedEffect
             );
 
             if (recognition) {
-                // Play the selected effect
                 playEffect(selectedEffect);
 
-                // Store info for share modal
                 const enrichedRecognition: Recognition = {
                     ...recognition,
                     from_user: currentUser,
-                    to_user: selectedUser,
+                    to_user: selectedUser || undefined,
                 };
                 setSentRecognition(enrichedRecognition);
                 setSentToUser(selectedUser);
                 setShowShareModal(true);
 
-                if (onSuccess) {
+                if (onSuccess && selectedUser) {
                     onSuccess(recognition, selectedUser);
                 }
 
                 // Reset form
-                setSelectedUser(null);
+                setSelectedUserId('');
                 setSelectedTemplate(null);
                 setAdditionalMessage('');
                 setSelectedEffect('confetti');
@@ -180,22 +177,20 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                     <p className="composer-hint">テンプレを押すだけでも送れます</p>
                 </div>
 
-                {/* Recipient Selection */}
+                {/* Recipient Selection - Native Select for reliability */}
                 <div className="composer-section">
                     <label className="composer-label">宛先</label>
 
-                    {/* Recent Recipients */}
-                    {recentRecipients.length > 0 && !selectedUser && (
+                    {/* Recent Recipients - Quick select */}
+                    {recentRecipients.length > 0 && !selectedUserId && (
                         <div className="composer-recent">
                             <span className="composer-recent-label">最近:</span>
                             {recentRecipients.map(user => (
                                 <button
                                     key={user.id}
+                                    type="button"
                                     className="composer-recent-avatar"
-                                    onClick={() => {
-                                        console.log('Selected recent user:', user);
-                                        setSelectedUser(user);
-                                    }}
+                                    onClick={() => handleUserChange(user.id)}
                                     title={user.name}
                                 >
                                     <div className="avatar avatar-sm">{user.name.charAt(0)}</div>
@@ -204,57 +199,19 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                         </div>
                     )}
 
-                    {selectedUser ? (
-                        <div className="composer-selected-user">
-                            <div className="avatar">{selectedUser.name.charAt(0)}</div>
-                            <span className="composer-selected-name">{selectedUser.name}</span>
-                            <button
-                                className="composer-clear-user"
-                                onClick={() => setSelectedUser(null)}
-                            >
-                                ✕
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="composer-user-select">
-                            <input
-                                type="text"
-                                className="input"
-                                placeholder="名前で検索..."
-                                value={userSearchQuery}
-                                onChange={e => {
-                                    setUserSearchQuery(e.target.value);
-                                    setShowUserSelect(true);
-                                }}
-                                onFocus={() => setShowUserSelect(true)}
-                            />
-                            {showUserSelect && (
-                                <div className="composer-user-dropdown">
-                                    {filteredUsers.slice(0, 8).map(user => (
-                                        <button
-                                            key={user.id}
-                                            className="composer-user-option"
-                                            onClick={() => {
-                                                console.log('Selected user:', user);
-                                                setSelectedUser(user);
-                                                setShowUserSelect(false);
-                                                setUserSearchQuery('');
-                                            }}
-                                        >
-                                            <div className="avatar avatar-sm">{user.name.charAt(0)}</div>
-                                            <div className="composer-user-option-info">
-                                                <span className="composer-user-option-name">{user.name}</span>
-                                                {user.dept && <span className="composer-user-option-dept">{user.dept}</span>}
-                                            </div>
-                                        </button>
-                                    ))}
-                                    {filteredUsers.length === 0 && (
-                                        <div className="composer-no-results">該当なし</div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {/* Native select dropdown */}
+                    <select
+                        className="input composer-user-select-native"
+                        value={selectedUserId}
+                        onChange={e => handleUserChange(e.target.value)}
+                    >
+                        <option value="">宛先を選択...</option>
+                        {availableUsers.map(user => (
+                            <option key={user.id} value={user.id}>
+                                {user.name}{user.dept ? ` (${user.dept})` : ''}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 {/* Templates */}
@@ -264,6 +221,7 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                         {PRAISE_TEMPLATES.map((template, idx) => (
                             <button
                                 key={idx}
+                                type="button"
                                 className={`chip ${selectedTemplate === template ? 'active' : ''}`}
                                 onClick={() => {
                                     setSelectedTemplate(selectedTemplate === template ? null : template);
@@ -317,6 +275,7 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                 {/* Send Button */}
                 <div className="composer-actions">
                     <button
+                        type="button"
                         className="btn btn-primary composer-send"
                         disabled={!canSend || isSending}
                         onClick={handleSend}
