@@ -6,12 +6,12 @@ export function SidebarNav() {
     const { currentUser } = useCurrentUser();
 
     const navItems = [
-        { path: '/', label: 'Home', icon: '🏠' },
-        { path: '/feed', label: 'Feed', icon: '📰' },
-        { path: '/send', label: 'Send', icon: '✨' },
-        { path: '/weekly', label: 'Weekly', icon: '📊' },
-        { path: '/settings', label: 'Settings', icon: '⚙️' },
-        { path: '/admin', label: 'Admin', icon: '🔧' },
+        { path: '/', label: 'ホーム', icon: '🏠' },
+        { path: '/feed', label: 'みんなの称賛', icon: '📰' },
+        { path: '/send', label: '称賛を送る', icon: '✨' },
+        { path: '/weekly', label: '週まとめ', icon: '📊' },
+        { path: '/settings', label: '設定', icon: '⚙️' },
+        { path: '/admin', label: '管理', icon: '🔧' },
     ];
 
     return (

@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useCurrentUser } from '../providers/CurrentUserProvider';
 import { fetchRecognitionsWithDetails } from '../lib/api/recognitions';
-import { QuickPraiseComposer } from '../components/praise/QuickPraiseComposer';
 import { PraiseCard } from '../components/praise/PraiseCard';
 import { NewItemsBanner } from '../components/praise/NewItemsBanner';
+import { HypeSection } from '../components/feed/HypeSection';
 import { EmptyState } from '../components/common/EmptyState';
 import { RightRail, WidgetCard } from '../components/shell/RightRail';
 import type { Recognition, FeedFilters } from '../lib/types';
@@ -113,20 +113,6 @@ export function Feed() {
         feedTopRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Handle send success
-    const handleSendSuccess = (recognition: Recognition, toUser: typeof users[0]) => {
-        const enrichedRecognition: Recognition = {
-            ...recognition,
-            from_user: currentUser!,
-            to_user: toUser,
-            reactions: [],
-            clap_count: 0,
-            user_has_clapped: false,
-        };
-        setRecognitions(prev => [enrichedRecognition, ...prev]);
-        latestIdRef.current = recognition.id;
-    };
-
     // Handle clap toggle
     const handleClapToggle = (recognitionId: string, hasClapped: boolean) => {
         setRecognitions(prev => prev.map(r => {
@@ -159,7 +145,7 @@ export function Feed() {
             <div className="page-content">
                 <div ref={feedTopRef} className="feed-top-anchor" />
 
-                <QuickPraiseComposer onSuccess={handleSendSuccess} compact />
+                <HypeSection />
 
                 <div className="feed-filters">
                     <div className="feed-filter-group">

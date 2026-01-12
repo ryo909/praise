@@ -1,0 +1,136 @@
+.hype-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.hype-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+}
+
+/* 1. Thermometer */
+.hype-thermometer {
+    position: relative;
+    overflow: hidden;
+}
+
+.hype-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.hype-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.hype-info {
+    flex: 1;
+}
+
+.hype-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.hype-highlight {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.hype-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.hype-progress-bg {
+    height: 12px;
+    background: var(--color-background-muted);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-2);
+    overflow: hidden;
+}
+
+.hype-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hype-next {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+    text-align: right;
+}
+
+/* 2. Streak */
+.hype-streak {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hype-label {
+    font-weight: 500;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.hype-value {
+    font-weight: 700;
+    font-size: var(--font-size-md);
+    color: var(--color-text);
+}
+
+/* 3. Topic */
+.hype-topic {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.hype-topic-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hype-topic-content {
+    font-weight: 600;
+    font-size: var(--font-size-md);
+    color: var(--color-text);
+}
+
+.hype-topic-hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+}
+
+.hype-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+@media (min-width: 768px) {
+    .hype-section {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    .hype-thermometer {
+        grid-row: 1 / 3;
+    }
+}
