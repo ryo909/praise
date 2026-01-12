@@ -53,5 +53,7 @@
 
     .app-main {
         padding: var(--space-4);
+        padding-bottom: calc(60px + var(--space-4));
+        /* Bottom nav height + spacing */
     }
 }
