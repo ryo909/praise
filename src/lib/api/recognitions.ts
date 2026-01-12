@@ -106,22 +106,47 @@ export async function createRecognition(
     message: string,
     effectKey: EffectKey = 'confetti'
 ): Promise<Recognition | null> {
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!fromUserId || !uuidRegex.test(fromUserId)) {
+        console.error('Invalid fromUserId:', fromUserId);
+        return null;
+    }
+
+    if (!toUserId || !uuidRegex.test(toUserId)) {
+        console.error('Invalid toUserId:', toUserId);
+        return null;
+    }
+
+    const payload = {
+        from_user_id: fromUserId,
+        to_user_id: toUserId,
+        message,
+        effect_key: effectKey,
+    };
+
+    // Debug log in development
+    console.log('Creating recognition with payload:', payload);
+
     const { data, error } = await supabase
         .from('recognitions')
-        .insert({
-            from_user_id: fromUserId,
-            to_user_id: toUserId,
-            message,
-            effect_key: effectKey,
-        })
+        .insert(payload)
         .select()
         .single();
 
     if (error) {
         console.error('Error creating recognition:', error);
+        console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+        });
         return null;
     }
 
+    console.log('Recognition created successfully:', data);
     return data;
 }
 

@@ -14,7 +14,7 @@ interface QuickPraiseComposerProps {
 }
 
 export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseComposerProps) {
-    const { currentUser, users } = useCurrentUser();
+    const { currentUser, users, isLoading, openIdentityModal } = useCurrentUser();
     const { showToast } = useToast();
 
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -33,13 +33,19 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
     const [sentToUser, setSentToUser] = useState<User | null>(null);
 
     useEffect(() => {
-        if (currentUser) {
-            fetchRecentRecipients(currentUser.id).then(setRecentRecipients);
+        if (currentUser?.id) {
+            fetchRecentRecipients(currentUser.id).then(recipients => {
+                // Filter out any invalid entries (in case of DB reset)
+                const validRecipients = recipients.filter(r => r && r.id && r.name);
+                setRecentRecipients(validRecipients);
+            });
         }
-    }, [currentUser]);
+    }, [currentUser?.id]);
 
-    const filteredUsers = users.filter(u => {
-        if (u.id === currentUser?.id) return false;
+    // Filter users - exclude current user
+    const availableUsers = users.filter(u => u.id !== currentUser?.id);
+
+    const filteredUsers = availableUsers.filter(u => {
         if (!userSearchQuery.trim()) return true;
         return u.name.toLowerCase().includes(userSearchQuery.toLowerCase());
     });
@@ -51,11 +57,30 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         return parts.join(' ');
     }, [selectedTemplate, additionalMessage]);
 
-    const canSend = selectedUser !== null;
+    const canSend = selectedUser !== null && selectedUser.id;
     const hasContent = selectedTemplate || additionalMessage.trim();
 
     const handleSend = async () => {
-        if (!currentUser || !selectedUser) return;
+        // Validate current user
+        if (!currentUser?.id) {
+            showToast('ログインが必要です', 'error');
+            openIdentityModal();
+            return;
+        }
+
+        // Validate recipient
+        if (!selectedUser?.id) {
+            showToast('宛先を選んでください', 'error');
+            return;
+        }
+
+        // Validate that selectedUser.id is a valid UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(selectedUser.id)) {
+            console.error('Invalid selectedUser.id:', selectedUser);
+            showToast('宛先が不正です。ページを再読み込みしてください', 'error');
+            return;
+        }
 
         // Show hint if no content
         if (!hasContent) {
@@ -64,6 +89,16 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         }
 
         setIsSending(true);
+
+        // Debug log
+        console.log('Sending recognition:', {
+            from: currentUser.id,
+            to: selectedUser.id,
+            toName: selectedUser.name,
+            message: getMessage(),
+            effect: selectedEffect,
+        });
+
         try {
             const recognition = await createRecognition(
                 currentUser.id,
@@ -97,9 +132,10 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                 setSelectedEffect('confetti');
                 setShowHint(false);
             } else {
-                showToast('送信に失敗しました', 'error');
+                showToast('送信に失敗しました（コンソールを確認）', 'error');
             }
-        } catch {
+        } catch (err) {
+            console.error('Send error:', err);
             showToast('送信に失敗しました', 'error');
         } finally {
             setIsSending(false);
@@ -111,6 +147,30 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
         setSentRecognition(null);
         setSentToUser(null);
     };
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className={`composer ${compact ? 'composer-compact' : ''}`}>
+                <div className="composer-loading">読み込み中...</div>
+            </div>
+        );
+    }
+
+    // No users available
+    if (availableUsers.length === 0) {
+        return (
+            <div className={`composer ${compact ? 'composer-compact' : ''}`}>
+                <div className="composer-header">
+                    <h3 className="composer-title">✨ 称賛を送る</h3>
+                </div>
+                <div className="composer-empty">
+                    <p>送信できるユーザーがいません</p>
+                    <p className="composer-empty-hint">Adminでユーザーを追加してください</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -132,7 +192,10 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                                 <button
                                     key={user.id}
                                     className="composer-recent-avatar"
-                                    onClick={() => setSelectedUser(user)}
+                                    onClick={() => {
+                                        console.log('Selected recent user:', user);
+                                        setSelectedUser(user);
+                                    }}
                                     title={user.name}
                                 >
                                     <div className="avatar avatar-sm">{user.name.charAt(0)}</div>
@@ -172,6 +235,7 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                                             key={user.id}
                                             className="composer-user-option"
                                             onClick={() => {
+                                                console.log('Selected user:', user);
                                                 setSelectedUser(user);
                                                 setShowUserSelect(false);
                                                 setUserSearchQuery('');
