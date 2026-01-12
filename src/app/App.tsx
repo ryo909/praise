@@ -11,8 +11,11 @@ import { Settings } from '../pages/Settings';
 import { Admin } from '../pages/Admin';
 
 export function App() {
+    // Get basename from Vite base config for GitHub Pages
+    const basename = import.meta.env.BASE_URL;
+
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={basename}>
             <ToastProvider>
                 <CurrentUserProvider>
                     <Routes>
