@@ -3,8 +3,8 @@ import { useCurrentUser } from '../../providers/CurrentUserProvider';
 import { useToast } from '../../providers/ToastProvider';
 import { createRecognition, fetchRecentRecipients } from '../../lib/api/recognitions';
 import { PRAISE_TEMPLATES } from '../../lib/utils/templates';
-import type { User, Recognition } from '../../lib/types';
-import confetti from 'canvas-confetti';
+import { EFFECT_OPTIONS, playEffect } from '../../lib/utils/effects';
+import type { User, Recognition, EffectKey } from '../../lib/types';
 import './QuickPraiseComposer.css';
 
 interface QuickPraiseComposerProps {
@@ -19,6 +19,7 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const [additionalMessage, setAdditionalMessage] = useState('');
+    const [selectedEffect, setSelectedEffect] = useState<EffectKey>('confetti');
     const [recentRecipients, setRecentRecipients] = useState<User[]>([]);
     const [showUserSelect, setShowUserSelect] = useState(false);
     const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -61,17 +62,13 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
             const recognition = await createRecognition(
                 currentUser.id,
                 selectedUser.id,
-                getMessage()
+                getMessage(),
+                selectedEffect
             );
 
             if (recognition) {
-                // Confetti animation
-                confetti({
-                    particleCount: 50,
-                    spread: 60,
-                    origin: { y: 0.7 },
-                    colors: ['#6366f1', '#a855f7', '#10b981'],
-                });
+                // Play the selected effect
+                playEffect(selectedEffect);
 
                 showToast(`${selectedUser.name}さんに称賛を送りました！`);
 
@@ -83,6 +80,7 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                 setSelectedUser(null);
                 setSelectedTemplate(null);
                 setAdditionalMessage('');
+                setSelectedEffect('confetti');
                 setShowHint(false);
             } else {
                 showToast('送信に失敗しました', 'error');
@@ -206,6 +204,22 @@ export function QuickPraiseComposer({ onSuccess, compact = false }: QuickPraiseC
                     }}
                     rows={2}
                 />
+            </div>
+
+            {/* Effect Selection */}
+            <div className="composer-section">
+                <label className="composer-label">演出</label>
+                <select
+                    className="input composer-effect-select"
+                    value={selectedEffect}
+                    onChange={e => setSelectedEffect(e.target.value as EffectKey)}
+                >
+                    {EFFECT_OPTIONS.map(option => (
+                        <option key={option.key} value={option.key}>
+                            {option.emoji} {option.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Hint */}

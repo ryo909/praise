@@ -92,3 +92,29 @@
         box-shadow: 0 0 0 4px var(--color-primary-light), var(--shadow-card-hover);
     }
 }
+
+/* Effect badge */
+.praise-card-effect {
+    margin-bottom: var(--space-3);
+}
+
+.praise-card-effect-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.praise-card-effect-badge:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: scale(1.05);
+}

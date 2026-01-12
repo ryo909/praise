@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ClapButton } from './ClapButton';
 import { formatRelativeTime } from '../../lib/utils/dates';
+import { playEffect, getEffectLabel } from '../../lib/utils/effects';
 import { useToast } from '../../providers/ToastProvider';
 import type { Recognition } from '../../lib/types';
 import './PraiseCard.css';
@@ -15,10 +16,19 @@ export function PraiseCard({ recognition, currentUserId, onClapToggle }: PraiseC
     const { showToast } = useToast();
 
     const handleCopyLink = () => {
-        const url = `${window.location.origin}/feed?highlight=${recognition.id}`;
+        const url = `${window.location.origin}${window.location.pathname}#/feed?highlight=${recognition.id}`;
         navigator.clipboard.writeText(url);
         showToast('リンクをコピーしました');
     };
+
+    const handleReplayEffect = () => {
+        if (recognition.effect_key && recognition.effect_key !== 'none') {
+            playEffect(recognition.effect_key);
+        }
+    };
+
+    const effectLabel = recognition.effect_key ? getEffectLabel(recognition.effect_key) : '';
+    const hasEffect = recognition.effect_key && recognition.effect_key !== 'none';
 
     return (
         <article className="praise-card">
@@ -43,6 +53,19 @@ export function PraiseCard({ recognition, currentUserId, onClapToggle }: PraiseC
                 <p className="praise-card-message">{recognition.message}</p>
             )}
 
+            {/* Effect badge */}
+            {hasEffect && (
+                <div className="praise-card-effect">
+                    <button
+                        className="praise-card-effect-badge"
+                        onClick={handleReplayEffect}
+                        title="クリックで演出を再生"
+                    >
+                        {effectLabel}
+                    </button>
+                </div>
+            )}
+
             <div className="praise-card-actions">
                 <ClapButton
                     recognitionId={recognition.id}
@@ -51,6 +74,15 @@ export function PraiseCard({ recognition, currentUserId, onClapToggle }: PraiseC
                     disabled={recognition.from_user_id === currentUserId}
                     onToggle={onClapToggle}
                 />
+                {hasEffect && (
+                    <button
+                        className="btn btn-ghost praise-card-action"
+                        onClick={handleReplayEffect}
+                        title="演出を再生"
+                    >
+                        🎬
+                    </button>
+                )}
                 <button className="btn btn-ghost praise-card-action" onClick={handleCopyLink}>
                     🔗
                 </button>

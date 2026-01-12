@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import type { Recognition, User, Reaction, FeedFilters } from '../types';
+import type { Recognition, User, Reaction, FeedFilters, EffectKey } from '../types';
 
 export async function fetchRecognitions(
     filters: FeedFilters,
@@ -103,7 +103,8 @@ export async function fetchRecognitionsWithDetails(
 export async function createRecognition(
     fromUserId: string,
     toUserId: string,
-    message: string
+    message: string,
+    effectKey: EffectKey = 'confetti'
 ): Promise<Recognition | null> {
     const { data, error } = await supabase
         .from('recognitions')
@@ -111,6 +112,7 @@ export async function createRecognition(
             from_user_id: fromUserId,
             to_user_id: toUserId,
             message,
+            effect_key: effectKey,
         })
         .select()
         .single();

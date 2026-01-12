@@ -7,11 +7,14 @@ export interface User {
     created_at: string;
 }
 
+export type EffectKey = 'confetti' | 'sparkle' | 'clap' | 'firework' | 'stamp' | 'none';
+
 export interface Recognition {
     id: string;
     from_user_id: string;
     to_user_id: string;
     message: string;
+    effect_key: EffectKey;
     created_at: string;
     // Joined data
     from_user?: User;
