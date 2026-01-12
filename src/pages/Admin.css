@@ -149,3 +149,126 @@
 .admin-badge-remove:hover {
     color: #ef4444;
 }
+
+/* Danger Zone Styling */
+.admin-lock-warning {
+    color: #f59e0b;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+}
+
+.admin-danger-zone {
+    margin-top: var(--space-8);
+}
+
+.admin-danger-title {
+    color: #ef4444 !important;
+}
+
+.admin-danger-card {
+    border: 1px solid #fecaca;
+    background: linear-gradient(135deg, #fff 0%, #fef2f2 100%);
+}
+
+.admin-danger-warning {
+    color: #b91c1c;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3);
+    background: #fef2f2;
+    border-radius: var(--radius-md);
+    border-left: 3px solid #ef4444;
+}
+
+.admin-danger-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-danger:disabled {
+    background: #fca5a5;
+    cursor: not-allowed;
+}
+
+.btn-danger-outline {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-danger-outline:hover {
+    background: #fef2f2;
+}
+
+.admin-danger-info {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-border-light);
+    padding-top: var(--space-3);
+}
+
+.admin-danger-info p {
+    margin-bottom: var(--space-1);
+}
+
+/* Delete Confirmation Modal */
+.admin-delete-modal {
+    max-width: 480px;
+}
+
+.admin-delete-modal-title {
+    font-size: var(--font-size-lg);
+    color: #ef4444;
+}
+
+.admin-delete-modal-desc {
+    margin-bottom: var(--space-3);
+}
+
+.admin-delete-modal-warning {
+    color: #b91c1c;
+    margin-bottom: var(--space-4);
+}
+
+.admin-delete-modal-confirm-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+}
+
+.admin-delete-modal-confirm-label code {
+    background: #fef2f2;
+    color: #ef4444;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.admin-delete-confirm-input {
+    text-align: center;
+    font-family: monospace;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
