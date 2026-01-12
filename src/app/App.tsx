@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { CurrentUserProvider } from '../providers/CurrentUserProvider';
 import { ToastProvider } from '../providers/ToastProvider';
 import { AppShell } from '../components/shell/AppShell';
@@ -11,11 +11,8 @@ import { Settings } from '../pages/Settings';
 import { Admin } from '../pages/Admin';
 
 export function App() {
-    // Get basename from Vite base config for GitHub Pages
-    const basename = import.meta.env.BASE_URL;
-
     return (
-        <BrowserRouter basename={basename}>
+        <HashRouter>
             <ToastProvider>
                 <CurrentUserProvider>
                     <Routes>
@@ -31,6 +28,6 @@ export function App() {
                     </Routes>
                 </CurrentUserProvider>
             </ToastProvider>
-        </BrowserRouter>
+        </HashRouter>
     );
 }
