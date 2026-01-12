@@ -49,36 +49,34 @@ export function getDailyTopic(): string {
 export async function fetchHypeStats() {
     // Calculate Today JST range in UTC
     const now = new Date();
+    // JSTの年月日を作る（JST=UTC+9前提で「JSTの今日」を取る）
+    const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const y = jst.getUTCFullYear();
+    const m = jst.getUTCMonth();
+    const d = jst.getUTCDate();
+    // 「JSTの00:00」をUTCで表現するには、UTCの前日15:00相当になるので -9h する
+    const startUtc = new Date(Date.UTC(y, m, d, -9, 0, 0));     // JST 00:00
+    const endUtc = new Date(Date.UTC(y, m, d + 1, -9, 0, 0));  // JST 翌日00:00
+    const startIso = startUtc.toISOString();
+    const endIso = endUtc.toISOString();
 
-    // Create Date object for Today 00:00 JST
-    // We treat "Today" as defined by JST
-    const jstNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-    const jstStart = new Date(jstNow);
-    jstStart.setHours(0, 0, 0, 0);
-
-    const jstEnd = new Date(jstStart);
-    jstEnd.setDate(jstEnd.getDate() + 1);
-
-    // To query database (which stores UTC), we need to correct the offset
-    // JST is UTC+9. So 00:00 JST is Previous Day 15:00 UTC.
-    // However, simplest way is to fetch recent data and filter in JS, 
-    // or use exact ISO strings if we trust the conversion.
-    // Let's use JS ISO string logic manually.
-
-    const startIso = new Date(jstStart.getTime() - 9 * 60 * 60 * 1000).toISOString();
-    const endIso = new Date(jstEnd.getTime() - 9 * 60 * 60 * 1000).toISOString();
+    console.log('[DEBUG] fetchHypeStats', { startIso, endIso, jstTime: jst.toISOString() });
 
     // 1. Get Today's count
-    const { count: todayCount, error: todayError } = await supabase
+    const { count, error } = await supabase
         .from('recognitions')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact', head: true })
         .gte('created_at', startIso)
         .lt('created_at', endIso);
 
-    if (todayError) {
-        console.error('Error fetching today stats:', todayError);
+    console.log('[DEBUG] Supabase result', { count, error });
+
+    if (error) {
+        console.error('Error fetching today stats:', error);
         return { todayCount: 0, streakDays: 0 };
     }
+
+    const todayCountVal = count ?? 0;
 
     // 2. Calculate Streak
     // We need to fetch dates of past recognitions to calculate streak
@@ -97,7 +95,7 @@ export async function fetchHypeStats() {
 
     if (historyError) {
         console.error('Error fetching streak history:', historyError);
-        return { todayCount: todayCount || 0, streakDays: 0 };
+        return { todayCount: todayCountVal, streakDays: 0 };
     }
 
     // Process unique dates in JST
@@ -116,20 +114,40 @@ export async function fetchHypeStats() {
     // Calculate streak from Today backwards
     // Current requirement: If today has 0, streak = 0.
     // If today > 0, check yesterday, etc.
+    // Note: The requirement says:
+    // "今日が0件なら streak_days = 0 とし、責めない文言で表示" -> HypeSection handles the text.
+    // Here we just return the calculated streak.
 
-    const todayJstStr = jstNow.toLocaleDateString('ja-JP', {
+    /**
+     * Streak calculation logic:
+     * - If today has count, today is part of streak? Usually yes.
+     * - If today has 0 count, streak is 0? Or streak is previous streak?
+     *   "今日が0件なら streak_days = 0 とし..." => If count is 0, streak is 0.
+     *   But "今日はまだ0件（最初の1件で復活）" implies we might want to know the *potential* streak?
+     *   However, strictly following: "今日が0件なら streak_days = 0"
+     */
+
+    // We need "todayStr" for the check
+    const todayJstStr = startUtc.toLocaleDateString('ja-JP', {
         timeZone: 'Asia/Tokyo',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
     }).replace(/\//g, '-');
 
-    if (!activeDays.has(todayJstStr)) {
-        return { todayCount: todayCount || 0, streakDays: 0 };
+    if (todayCountVal === 0) {
+        // As per requirement "Today 0 count => streak 0" (likely for display purposes)
+        // Although usually streak is "consecutive days up to yesterday + today if done".
+        // The user prompts implies: "recognitions には実際にレコードが増えているのに反映されない"
+        // So they want to fix the count.
+        // Regarding streak: I will keep existing logic behavior roughly, but corrected.
+        // Current code had: if (!activeDays.has(todayJstStr)) return ...
+        // Since we have exact count, let's use it.
+        return { todayCount: todayCountVal, streakDays: 0 };
     }
 
     let streak = 0;
-    let checkDate = new Date(jstStart); // Start checking from Today
+    let checkDate = new Date(startUtc); // Start checking from Today (JST 00:00)
 
     while (true) {
         const dateStr = checkDate.toLocaleDateString('ja-JP', {
@@ -139,7 +157,19 @@ export async function fetchHypeStats() {
             day: '2-digit'
         }).replace(/\//g, '-');
 
-        if (activeDays.has(dateStr)) {
+        // We know today has count because of the check above.
+        // But let's check activeDays for consistency if history includes today.
+        // Actually history query might include today.
+        // Ideally we just trust `todayCountVal`.
+
+        let hasActivity = false;
+        if (dateStr === todayJstStr) {
+            hasActivity = todayCountVal > 0;
+        } else {
+            hasActivity = activeDays.has(dateStr);
+        }
+
+        if (hasActivity) {
             streak++;
             // Go to previous day
             checkDate.setDate(checkDate.getDate() - 1);
@@ -149,7 +179,7 @@ export async function fetchHypeStats() {
     }
 
     return {
-        todayCount: todayCount || 0,
+        todayCount: todayCountVal,
         streakDays: streak
     };
 }
